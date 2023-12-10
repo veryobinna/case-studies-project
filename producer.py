@@ -3,12 +3,12 @@ import requests
 import json
 import time
 
-from my_secrets import water_data_api_key, air_data_api_key
+from my_secrets import MEERSENS_API_KEY, OPEN_WAETHER_MAP_API_KEY
 
 
 LONGITUDE = "55.4920"
 LATITUDE = "4.6796"
-AIR_DATA_API_URL = f"http://api.openweathermap.org/data/2.5/air_pollution?lat={LATITUDE}&lon={LONGITUDE}&appid={air_data_api_key}"
+AIR_DATA_API_URL = f"http://api.openweathermap.org/data/2.5/air_pollution?lat={LATITUDE}&lon={LONGITUDE}&appid={OPEN_WAETHER_MAP_API_KEY}"
 WATER_DATA_API_URL = f"https://api.meersens.com/environment/public/water/current?lat={LATITUDE}&lng={LONGITUDE}"
 
 BROKERS = "localhost:9092"
@@ -28,13 +28,11 @@ def get_data(topic, api_url):
     producer.flush()
 
 def start_producer():
-    count = 0
-    while count < 15:
-        get_data(topic=WATER_DATA_TOPIC, api_url=WATER_DATA_API_URL, headers={"apikey": water_data_api_key})
+    while True:
+        get_data(topic=WATER_DATA_TOPIC, api_url=WATER_DATA_API_URL, headers={"apikey": MEERSENS_API_KEY})
         get_data(topic=AIR_DATA_TOPIC, api_url=AIR_DATA_API_URL)
 
         time.sleep(10)
-        count += 1
 
 
 if __name__ == "__main__":
